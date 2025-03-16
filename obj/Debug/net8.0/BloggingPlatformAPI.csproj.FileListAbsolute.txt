@@ -115,3 +115,4 @@ C:\Users\nb508\source\repos\BloggingPlatformAPI\BloggingPlatformAPI\obj\Debug\ne
 C:\Users\nb508\source\repos\BloggingPlatformAPI\BloggingPlatformAPI\obj\Debug\net8.0\BloggingPlatformAPI.pdb
 C:\Users\nb508\source\repos\BloggingPlatformAPI\BloggingPlatformAPI\obj\Debug\net8.0\BloggingPlatformAPI.genruntimeconfig.cache
 C:\Users\nb508\source\repos\BloggingPlatformAPI\BloggingPlatformAPI\obj\Debug\net8.0\ref\BloggingPlatformAPI.dll
+C:\Users\nb508\source\repos\BloggingPlatformAPI\BloggingPlatformAPI\obj\Debug\net8.0\BloggingPlatformAPI.sourcelink.json

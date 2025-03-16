@@ -17,9 +17,9 @@ public class CommentController : ControllerBase
     // 🔹 Add a Comment (Only Subscribers, Bloggers, Admins)
     [HttpPost]
     [Authorize(Roles = "Subscriber,Blogger,Admin")]
-    public IActionResult AddComment([FromBody] Comment comment)
+    public IActionResult AddComment([FromBody] CreateCommentDto commentDto)
     {
-        if (comment == null || string.IsNullOrWhiteSpace(comment.Content))
+        if (commentDto == null || string.IsNullOrWhiteSpace(commentDto.Content))
         {
             return BadRequest("Invalid comment data.");
         }
@@ -28,18 +28,24 @@ public class CommentController : ControllerBase
         var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
         // Validate BlogPostId
-        var blogPostExists = _context.BlogPosts.Any(b => b.Id == comment.BlogPostId);
+        var blogPostExists = _context.BlogPosts.Any(b => b.Id == commentDto.BlogPostId);
         if (!blogPostExists)
         {
             return BadRequest("Invalid BlogPostId.");
         }
 
-        // Assign the logged-in user's ID to the comment
-        comment.UserId = loggedInUserId;
+        // Create a new Comment instance
+        var newComment = new Comment
+        {
+            Content = commentDto.Content,
+            UserId = loggedInUserId,
+            BlogPostId = commentDto.BlogPostId,
+            CreatedAt = DateTime.UtcNow
+        };
 
-        _context.Comments.Add(comment);
+        _context.Comments.Add(newComment);
         _context.SaveChanges();
-        return Ok("Comment added successfully.");
+        return Ok(new { message = "Comment added successfully." });
     }
 
     // 🔹 Get All Comments for a Blog Post (Public API)
@@ -63,7 +69,7 @@ public class CommentController : ControllerBase
     // 🔹 Edit a Comment (Only Comment Owner)
     [HttpPut("{id}")]
     [Authorize(Roles = "Subscriber,Blogger,Admin")]
-    public IActionResult EditComment(int id, [FromBody] Comment updatedComment)
+    public IActionResult EditComment(int id, [FromBody] UpdateCommentDto updatedCommentDto)
     {
         var comment = _context.Comments.Find(id);
         if (comment == null) return NotFound("Comment not found.");
@@ -77,14 +83,14 @@ public class CommentController : ControllerBase
         }
 
         // Ensure new content is valid
-        if (string.IsNullOrWhiteSpace(updatedComment.Content))
+        if (string.IsNullOrWhiteSpace(updatedCommentDto.Content))
         {
             return BadRequest("Comment content cannot be empty.");
         }
 
-        comment.Content = updatedComment.Content;
+        comment.Content = updatedCommentDto.Content;
         _context.SaveChanges();
-        return Ok("Comment updated successfully.");
+        return Ok(new { message = "Comment updated successfully." });
     }
 
     // 🔹 Delete a Comment (Only Comment Owner or Admin)
@@ -107,6 +113,6 @@ public class CommentController : ControllerBase
 
         _context.Comments.Remove(comment);
         _context.SaveChanges();
-        return Ok("Comment deleted successfully.");
+        return Ok(new { message = "Comment deleted successfully." });
     }
 }

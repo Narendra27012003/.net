@@ -1,6 +1,43 @@
 [
   {
     "ContainingType": "AuthController",
+    "Method": "AssignRole",
+    "RelativePath": "api/auth/assign-role/{userId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "roleDto",
+        "Type": "AssignRoleDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AuthController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/auth/delete-user/{userId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AuthController",
     "Method": "Login",
     "RelativePath": "api/auth/login",
     "HttpMethod": "POST",
@@ -8,8 +45,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "user",
-        "Type": "User",
+        "Name": "userDto",
+        "Type": "RegisterUserDto",
         "IsRequired": true
       }
     ],
@@ -24,8 +61,24 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "user",
-        "Type": "User",
+        "Name": "userDto",
+        "Type": "RegisterUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/auth/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "resetDto",
+        "Type": "ResetPasswordDto",
         "IsRequired": true
       }
     ],
@@ -40,8 +93,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "post",
-        "Type": "BlogPost",
+        "Name": "postDto",
+        "Type": "CreateBlogPostDto",
         "IsRequired": true
       }
     ],
@@ -55,6 +108,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "BlogPostController",
+    "Method": "GetBlogPostById",
+    "RelativePath": "api/blogs/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -88,7 +157,7 @@
       },
       {
         "Name": "updatedPost",
-        "Type": "BlogPost",
+        "Type": "CreateBlogPostDto",
         "IsRequired": true
       }
     ],
@@ -103,8 +172,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "comment",
-        "Type": "Comment",
+        "Name": "commentDto",
+        "Type": "CreateCommentDto",
         "IsRequired": true
       }
     ],
@@ -140,8 +209,8 @@
         "IsRequired": true
       },
       {
-        "Name": "updatedComment",
-        "Type": "Comment",
+        "Name": "updatedCommentDto",
+        "Type": "UpdateCommentDto",
         "IsRequired": true
       }
     ],

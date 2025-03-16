@@ -17,9 +17,9 @@ public class BlogPostController : ControllerBase
     // 🔹 Create Blog Post (Only Bloggers & Admins)
     [HttpPost]
     [Authorize(Roles = "Blogger,Admin")]
-    public IActionResult CreateBlogPost([FromBody] BlogPost post)
+    public IActionResult CreateBlogPost([FromBody] CreateBlogPostDto postDto)
     {
-        if (post == null || string.IsNullOrWhiteSpace(post.Title) || string.IsNullOrWhiteSpace(post.Content))
+        if (postDto == null || string.IsNullOrWhiteSpace(postDto.Title) || string.IsNullOrWhiteSpace(postDto.Content))
         {
             return BadRequest("Invalid blog post data.");
         }
@@ -27,12 +27,17 @@ public class BlogPostController : ControllerBase
         // 🔹 Extract UserId from JWT Token (Authenticated User)
         var loggedInUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-        // Ensure the logged-in user is the one creating the blog
-        post.UserId = loggedInUserId;
+        // Create a new blog post instance
+        var newPost = new BlogPost
+        {
+            Title = postDto.Title,
+            Content = postDto.Content,
+            UserId = loggedInUserId
+        };
 
-        _context.BlogPosts.Add(post);
+        _context.BlogPosts.Add(newPost);
         _context.SaveChanges();
-        return Ok("Blog post created successfully.");
+        return Ok(new { message = "Blog post created successfully." });
     }
 
     // 🔹 Get All Blog Posts (Public API - Everyone Can Access)
@@ -50,6 +55,27 @@ public class BlogPostController : ControllerBase
             }).ToList();
 
         return Ok(posts);
+    }
+
+    // 🔹 Get Blog Post by ID
+    [HttpGet("{id}")]
+    public IActionResult GetBlogPostById(int id)
+    {
+        var post = _context.BlogPosts
+            .Include(b => b.User)
+            .Where(b => b.Id == id)
+            .Select(b => new
+            {
+                b.Id,
+                b.Title,
+                b.Content,
+                Author = b.User.Username
+            }).FirstOrDefault();
+
+        if (post == null)
+            return NotFound("Blog post not found.");
+
+        return Ok(post);
     }
 
     // 🔹 Delete Blog Post (Only for Blog Owner & Admin)
@@ -72,13 +98,13 @@ public class BlogPostController : ControllerBase
 
         _context.BlogPosts.Remove(post);
         _context.SaveChanges();
-        return Ok("Blog post deleted.");
+        return Ok(new { message = "Blog post deleted successfully." });
     }
 
     // 🔹 Update Blog Post (Only for Blog Owner)
     [HttpPut("{id}")]
     [Authorize(Roles = "Blogger,Admin")]
-    public IActionResult UpdateBlogPost(int id, [FromBody] BlogPost updatedPost)
+    public IActionResult UpdateBlogPost(int id, [FromBody] CreateBlogPostDto updatedPost)
     {
         var post = _context.BlogPosts.Find(id);
         if (post == null) return NotFound("Blog post not found.");
@@ -98,6 +124,6 @@ public class BlogPostController : ControllerBase
         post.Content = updatedPost.Content;
         _context.SaveChanges();
 
-        return Ok("Blog post updated successfully.");
+        return Ok(new { message = "Blog post updated successfully." });
     }
 }
